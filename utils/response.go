@@ -2,11 +2,11 @@ package utils
 
 import "github.com/gin-gonic/gin"
 
-func ErrorResponse(err interface{}) gin.H {
+func ErrorResponse(err error) gin.H {
 	return gin.H{
 		"message": "Error",
 		"data":    nil,
-		"error":   err,
+		"error":   err.Error(),
 	}
 }
 

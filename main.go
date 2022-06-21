@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"log"
 	"three/database/postgres"
@@ -9,6 +10,9 @@ import (
 	authhandler "three/v1/auth/delivery/http"
 	authrepository "three/v1/auth/repository"
 	authusecase "three/v1/auth/usecase"
+	userhandler "three/v1/user/delivery/http"
+	userrepository "three/v1/user/repository"
+	userusecase "three/v1/user/usecase"
 )
 
 func main() {
@@ -22,10 +26,19 @@ func main() {
 	r := gin.Default()
 	api := newApiRouter(r)
 	routerv1 := v1.NewV1Router(api)
+
 	authRepository := authrepository.NewAuthRepository(postgresDb)
 	authUseCase := authusecase.NewAuthUseCase(authRepository)
-	authhandler.NewUserHandler(routerv1, authUseCase)
-	r.Run(":2032")
+	authhandler.NewAuthHandler(routerv1, authUseCase)
+
+	userRepository := userrepository.NewUserRepository(postgresDb)
+	userUseCase := userusecase.NewUserUseCase(userRepository)
+	userhandler.NewUserHandler(routerv1, userUseCase)
+
+	err = r.Run(":2032")
+	if err != nil {
+		fmt.Printf("%v\n", err)
+	}
 }
 
 func newApiRouter(r *gin.Engine) *gin.RouterGroup {

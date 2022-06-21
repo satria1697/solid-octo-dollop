@@ -18,6 +18,6 @@ type AuthUseCase interface {
 }
 
 type AuthRepository interface {
-	LoginRepository(username string, passwowrd string) (string, error)
+	LoginRepository(username string, passwowrd string) (domain.User, error)
 	RegisterRepository(username string, password string) (domain.User, error)
 }

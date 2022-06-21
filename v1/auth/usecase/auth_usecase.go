@@ -1,6 +1,7 @@
 package usecase
 
 import (
+	"three/utils"
 	"three/v1/auth/domain"
 	userdomain "three/v1/user/domain"
 )
@@ -16,7 +17,10 @@ func (a authUseCase) RegisterUseCase(username string, password string) (userdoma
 
 func (a authUseCase) LoginUseCase(username string, password string) (string, error) {
 	res, err := a.authRepository.LoginRepository(username, password)
-	return res, err
+	if err != nil {
+		return "", err
+	}
+	return utils.CreateToken(res.Username)
 }
 
 func NewAuthUseCase(authRepository domain.AuthRepository) domain.AuthUseCase {
