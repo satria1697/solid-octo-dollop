@@ -1,0 +1,41 @@
+version: "3.9"
+services:
+  database:
+    image: postgres:latest
+    restart: always
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    networks:
+      connect:
+    volumes:
+      - db_vm:/db_data
+    ports:
+      - "5432:5432"
+    tty: true
+  app:
+    build: .
+    restart: on-failure
+    environment:
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME}
+      DB_HOST: database
+      DB_PORT: ${DB_PORT}
+      GIN_MODE: release
+    networks:
+      connect:
+    volumes:
+      - app_vm:/app_data
+    ports:
+      - "2032:2032"
+    tty: true
+
+volumes:
+  db_vm:
+  app_vm:
+
+networks:
+  connect:
+    driver: bridge
